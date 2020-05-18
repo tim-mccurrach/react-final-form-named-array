@@ -812,4 +812,50 @@ describe('FieldArray', () => {
   //   fireEvent.click(getByText('Add Jared'))
   //   expect(getByTestId('error')).toHaveTextContent('Too many')
   // })
+
+  it('should provide names === null if no getItemName is provided', () => {
+    const renderArray = jest.fn(() => <div />)
+    render(
+      <Form
+        onSubmit={onSubmitMock}
+        mutators={arrayMutators}
+        subscription={{}}
+        initialValues={{ foo: ['a', 'b', 'c'] }}
+      >
+        {() => (
+          <form>
+            <FieldArray name="foo">{renderArray}</FieldArray>
+          </form>
+        )}
+      </Form>
+    )
+    expect(renderArray).toHaveBeenCalled()
+    expect(renderArray).toHaveBeenCalledTimes(1)
+
+    expect(renderArray.mock.calls[0][0].fields.names).toBe(null)
+  })
+
+  it('should provide names calculated from initialValues', () => {
+    const renderArray = jest.fn(() => <div />)
+    render(
+      <Form
+        onSubmit={onSubmitMock}
+        mutators={arrayMutators}
+        subscription={{}}
+        initialValues={{ foo: ['a', 'b', 'c'] }}
+      >
+        {() => (
+          <form>
+            <FieldArray name="foo" getItemName={x => x}>
+              {renderArray}
+            </FieldArray>
+          </form>
+        )}
+      </Form>
+    )
+    expect(renderArray).toHaveBeenCalled()
+    expect(renderArray).toHaveBeenCalledTimes(1)
+
+    expect(renderArray.mock.calls[0][0].fields.names).toEqual(['a', 'b', 'c'])
+  })
 })

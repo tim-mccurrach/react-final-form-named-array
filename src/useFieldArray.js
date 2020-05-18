@@ -1,8 +1,10 @@
 // @flow
+import React from 'react'
 import { useForm, useField } from 'react-final-form'
 import { fieldSubscriptionItems, ARRAY_ERROR } from 'final-form'
 import type { Mutators } from 'final-form-arrays'
 import type { FieldValidator, FieldSubscription } from 'final-form'
+import nameListMutators from './NameListMutators'
 import type { FieldArrayRenderProps, UseFieldArrayConfig } from './types'
 import defaultIsEqual from './defaultIsEqual'
 import useConstant from './useConstant'
@@ -16,6 +18,7 @@ const useFieldArray = (
   name: string,
   {
     subscription = all,
+    getItemName,
     defaultValue,
     initialValue,
     isEqual = defaultIsEqual,
@@ -23,21 +26,6 @@ const useFieldArray = (
   }: UseFieldArrayConfig = {}
 ): FieldArrayRenderProps => {
   const form = useForm('useFieldArray')
-
-  const formMutators: Mutators = form.mutators
-  const hasMutators = !!(formMutators && formMutators.push && formMutators.pop)
-  if (!hasMutators) {
-    throw new Error(
-      'Array mutators not found. You need to provide the mutators from final-form-arrays to your form'
-    )
-  }
-  const mutators = useConstant<Mutators>(() =>
-    // curry the field name onto all mutator calls
-    Object.keys(formMutators).reduce((result, key) => {
-      result[key] = (...args) => formMutators[key](name, ...args)
-      return result
-    }, {})
-  )
 
   const validate: FieldValidator = useConstant(
     () => (value, allValues, meta) => {
@@ -65,6 +53,37 @@ const useFieldArray = (
     isEqual,
     validate,
     format: v => v
+  })
+
+  const [nameList, setNameList] = React.useState<null | string[]>(
+    meta.initial && getItemName
+      ? meta.initial.map(v => getItemName(v, meta.initial))
+      : null
+  )
+
+  const formMutators: Mutators = form.mutators
+  const hasMutators = !!(formMutators && formMutators.push && formMutators.pop)
+  if (!hasMutators) {
+    throw new Error(
+      'Array mutators not found. You need to provide the mutators from final-form-arrays to your form'
+    )
+  }
+
+  const mutators = useConstant<Mutators>(() => {
+    // curry the field name onto all mutator calls
+    // and apply the nameListMutator if applicable
+    const nameListMutatorKeys = Object.keys(nameListMutators)
+    return Object.keys(formMutators).reduce((result, key) => {
+      if (getItemName && nameListMutatorKeys.includes(key)) {
+        result[key] = (...args) => {
+          nameListMutators[key](setNameList, getItemName, ...args)
+          return formMutators[key](name, ...args)
+        }
+      } else {
+        result[key] = (...args) => formMutators[key](name, ...args)
+      }
+      return result
+    }, {})
   })
 
   const forEach = (iterator: (name: string, index: number) => void): void => {
@@ -95,7 +114,8 @@ const useFieldArray = (
       map,
       ...mutators,
       ...fieldState,
-      value: input.value
+      value: input.value,
+      names: nameList
     },
     meta
   }

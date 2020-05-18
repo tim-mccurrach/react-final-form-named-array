@@ -29,6 +29,7 @@ export type FieldArrayRenderProps = {
     map: (iterator: (name: string, index: number) => any) => any[],
     move: (from: number, to: number) => void,
     name: string,
+    names: string[],
     pop: () => any,
     push: (value: any) => void,
     remove: (index: number) => any,
@@ -48,6 +49,7 @@ export type RenderableProps<T> = $Shape<{
 
 export type UseFieldArrayConfig = {
   subscription?: FieldSubscription,
+  getItemName?: (value: any, values?: any[]) => string,
   defaultValue?: any,
   initialValue?: any,
   isEqual?: (any[], any[]) => boolean,

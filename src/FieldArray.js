@@ -17,6 +17,7 @@ const versions = {
 const FieldArray = ({
   name,
   subscription,
+  getItemName,
   defaultValue,
   initialValue,
   isEqual,
@@ -25,6 +26,7 @@ const FieldArray = ({
 }: FieldArrayProps) => {
   const { fields, meta } = useFieldArray(name, {
     subscription,
+    getItemName,
     defaultValue,
     initialValue,
     isEqual,

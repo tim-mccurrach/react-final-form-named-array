@@ -814,7 +814,7 @@ describe('FieldArray', () => {
   //   expect(getByTestId('error')).toHaveTextContent('Too many')
   // })
 
-  it('data should not be effected if no getItemName is provided', () => {
+  it('should leave data uneffected if no getItemName is provided', () => {
     const renderArray = jest.fn(() => <div />)
     render(
       <Form
@@ -841,13 +841,12 @@ describe('FieldArray', () => {
     expect(renderArray.mock.calls[0][0].meta.data).toEqual({})
   })
 
-  it('should provide names calculated from initialValues', () => {
+  it('should calculate from initialValues', () => {
     const renderArray = jest.fn(() => <div />)
     render(
       <Form
         onSubmit={onSubmitMock}
         mutators={arrayMutators}
-        //getItemName={v => v}
         subscription={{
           data: true,
           initial: true,
@@ -871,6 +870,36 @@ describe('FieldArray', () => {
     expect(renderArray.mock.calls[1][0].meta.data).toEqual({
       [NAME_LIST_INITIALISED]: true,
       [NAME_LIST]: ['a', 'b', 'c']
+    })
+  })
+  it('should store an empty array in NAME_LIST when no initial values are provided', () => {
+    const renderArray = jest.fn(() => <div />)
+    render(
+      <Form
+        onSubmit={onSubmitMock}
+        mutators={arrayMutators}
+        subscription={{
+          data: true,
+          pristine: true,
+          initial: true,
+          value: true
+        }}
+      >
+        {() => (
+          <form>
+            <FieldArray name="foo" getItemName={x => x}>
+              {renderArray}
+            </FieldArray>
+          </form>
+        )}
+      </Form>
+    )
+    expect(renderArray).toHaveBeenCalled()
+    expect(renderArray).toHaveBeenCalledTimes(2)
+
+    expect(renderArray.mock.calls[1][0].meta.data).toEqual({
+      [NAME_LIST_INITIALISED]: true,
+      [NAME_LIST]: []
     })
   })
 })

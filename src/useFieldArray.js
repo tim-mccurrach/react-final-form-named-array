@@ -87,8 +87,11 @@ const useFieldArray = (
   })
 
   const reinitialiseNameList = initial_data => {
+    if (!getItemName) {
+      return
+    }
     mutators.setNameList(
-      initial_data && getItemName
+      initial_data
         ? initial_data.map(value => getItemName(value, initial_data))
         : []
     )
@@ -98,10 +101,8 @@ const useFieldArray = (
   // set initial name list during first render
   const firstRender = React.useRef(true)
   React.useEffect(() => {
-    if (getItemName && meta.initial) {
-      reinitialiseNameList(meta.initial)
-      firstRender.current = false
-    }
+    reinitialiseNameList(meta.initial)
+    firstRender.current = false
   }, [])
 
   // reset name list when form is reset:
@@ -117,7 +118,6 @@ const useFieldArray = (
     meta.data &&
     !meta.data[NAME_LIST_INITIALISED]
   ) {
-    // note that this will not
     reinitialiseNameList()
   }
   // if the field is no longer prisitne, set NAME_LIST_INITIALISED variable

@@ -1,7 +1,8 @@
 import React from 'react'
 import { render, fireEvent, cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
-import arrayMutators from 'final-form-arrays'
+import arrayMutators from './nameListMutators'
+import { NAME_LIST_INITIALISED, NAME_LIST } from './nameListMutators/constants'
 import { ErrorBoundary, Toggle, wrapWith } from './testUtils'
 import { Form, Field } from 'react-final-form'
 import { FieldArray, version } from '.'
@@ -65,7 +66,7 @@ describe('FieldArray', () => {
     expect(errorSpy).toHaveBeenCalled()
     expect(errorSpy).toHaveBeenCalledTimes(1)
     expect(errorSpy.mock.calls[0][0].message).toBe(
-      'Array mutators not found. You need to provide the mutators from final-form-arrays to your form'
+      'Array mutators not found. You need to provide the mutators from react-final-form-named-arrays to your form'
     )
     console.error.mockRestore()
   })
@@ -813,13 +814,18 @@ describe('FieldArray', () => {
   //   expect(getByTestId('error')).toHaveTextContent('Too many')
   // })
 
-  it('should provide names === null if no getItemName is provided', () => {
+  it('data should not be effected if no getItemName is provided', () => {
     const renderArray = jest.fn(() => <div />)
     render(
       <Form
         onSubmit={onSubmitMock}
         mutators={arrayMutators}
-        subscription={{}}
+        subscription={{
+          value: true,
+          data: true,
+          pristine: true,
+          initial: true
+        }}
         initialValues={{ foo: ['a', 'b', 'c'] }}
       >
         {() => (
@@ -832,7 +838,7 @@ describe('FieldArray', () => {
     expect(renderArray).toHaveBeenCalled()
     expect(renderArray).toHaveBeenCalledTimes(1)
 
-    expect(renderArray.mock.calls[0][0].fields.names).toBe(null)
+    expect(renderArray.mock.calls[0][0].meta.data).toEqual({})
   })
 
   it('should provide names calculated from initialValues', () => {
@@ -841,7 +847,13 @@ describe('FieldArray', () => {
       <Form
         onSubmit={onSubmitMock}
         mutators={arrayMutators}
-        subscription={{}}
+        //getItemName={v => v}
+        subscription={{
+          data: true,
+          initial: true,
+          pristine: true,
+          value: true
+        }}
         initialValues={{ foo: ['a', 'b', 'c'] }}
       >
         {() => (
@@ -854,8 +866,11 @@ describe('FieldArray', () => {
       </Form>
     )
     expect(renderArray).toHaveBeenCalled()
-    expect(renderArray).toHaveBeenCalledTimes(1)
+    expect(renderArray).toHaveBeenCalledTimes(2)
 
-    expect(renderArray.mock.calls[0][0].fields.names).toEqual(['a', 'b', 'c'])
+    expect(renderArray.mock.calls[1][0].meta.data).toEqual({
+      [NAME_LIST_INITIALISED]: true,
+      [NAME_LIST]: ['a', 'b', 'c']
+    })
   })
 })

@@ -19,6 +19,7 @@ type Meta = $Shape<{
   submitting?: boolean,
   touched?: boolean,
   valid?: boolean,
+  validating?: boolean,
   visited?: boolean
 }>
 
@@ -29,7 +30,6 @@ export type FieldArrayRenderProps = {
     map: (iterator: (name: string, index: number) => any) => any[],
     move: (from: number, to: number) => void,
     name: string,
-    names: string[],
     pop: () => any,
     push: (value: any) => void,
     remove: (index: number) => any,

@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
-import arrayMutators from 'final-form-arrays'
+import arrayMutators from './nameListMutators'
 import { ErrorBoundary } from './testUtils'
 import { Form } from 'react-final-form'
 import useFieldArray from './useFieldArray'

@@ -1,7 +1,4 @@
-// it should add something to the data
-// it should call the original mutator
 import pop from './pop'
-import { cleanup } from '@testing-library/react'
 import arrayMutators from 'final-form-arrays'
 import { setIn } from 'final-form'
 
@@ -49,7 +46,7 @@ describe('pop', () => {
       }
     }
     pop(['foo'], state, { setIn, changeValue })
-    expect((state.fields.foo.data.NAME_LIST = ['one']))
+    expect(state.fields.foo.data.NAME_LIST).toEqual(['one'])
   })
   it('should return an empty array if array is empty', () => {
     const state = {
@@ -89,7 +86,7 @@ describe('pop', () => {
       }
     }
     pop(['foo'], state, { setIn, changeValue })
-    expect(state.fields.foo.data.NAME_LIST).toBe(undefined)
+    expect(state.fields.foo.data.NAME_LIST).toBeUndefined()
   })
   it('should call the original pop mutator once', () => {
     const state = {
@@ -145,7 +142,7 @@ describe('pop', () => {
       }
     }
     pop(['foo'], state, { setIn, changeValue })
-    expect((state.fields.foo.data.NAME_LIST = ['one']))
+    expect(state.fields.foo.data.NAME_LIST).toEqual(['one'])
     expect(arrayMutators.pop).toHaveBeenCalled()
     expect(arrayMutators.pop).toHaveBeenCalledTimes(1)
     expect(arrayMutators.pop.mock.calls[0]).toEqual([

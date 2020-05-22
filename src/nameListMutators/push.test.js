@@ -1,7 +1,6 @@
 // it should add something to the data
 // it should call the original mutator
 import push from './push'
-import { cleanup } from '@testing-library/react'
 import arrayMutators from 'final-form-arrays'
 import { setIn } from 'final-form'
 
@@ -118,7 +117,7 @@ describe('push', () => {
     })
 
     expect(result).toEqual('xyz')
-    expect((state.fields.foo.data.NAME_LIST = ['one', 'two_bar']))
+    expect(state.fields.foo.data.NAME_LIST).toEqual(['one', 'two_bar'])
     expect(arrayMutators.push).toHaveBeenCalledTimes(1)
     expect(arrayMutators.push.mock.calls[0]).toEqual([
       ['foo', 'two'],

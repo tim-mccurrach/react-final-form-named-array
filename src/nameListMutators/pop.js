@@ -8,13 +8,15 @@ const pop: Mutator<any> = (
   state: MutableState<any>,
   tools: Tools<any>
 ) => {
-  const nameList = state.fields[name].data[NAME_LIST]
-  nameList.pop()
-  state.fields[name].data = tools.setIn(
-    state.fields[name].data,
-    NAME_LIST,
-    nameList
-  )
+  const nameList: ?(string[]) = state.fields[name].data[NAME_LIST]
+  if (nameList) {
+    nameList.pop()
+    state.fields[name].data = tools.setIn(
+      state.fields[name].data,
+      NAME_LIST,
+      nameList
+    )
+  }
   return arrayMutators.pop([name], state, tools)
 }
 

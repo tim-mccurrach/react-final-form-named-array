@@ -69,7 +69,27 @@ describe('pop', () => {
       }
     }
     pop(['foo'], state, { setIn, changeValue })
-    expect((state.fields.foo.data.NAME_LIST = []))
+    expect(state.fields.foo.data.NAME_LIST).toEqual([])
+  })
+  it('should leave data unchanged if NAME_ARRAY is undefined', () => {
+    const state = {
+      formState: {
+        values: {
+          foo: []
+        }
+      },
+      fields: {
+        foo: {
+          name: 'foo',
+          touched: false,
+          data: {
+            NAME_LIST: undefined
+          }
+        }
+      }
+    }
+    pop(['foo'], state, { setIn, changeValue })
+    expect(state.fields.foo.data.NAME_LIST).toBe(undefined)
   })
   it('should call the original pop mutator once', () => {
     const state = {

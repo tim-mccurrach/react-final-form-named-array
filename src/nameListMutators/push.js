@@ -8,7 +8,7 @@ const push: Mutator<any> = (
   state: MutableState<any>,
   tools: Tools<any>
 ) => {
-  const currentNameList: string[] = state.fields[name].data[NAME_LIST]
+  const currentNameList: ?(string[]) = state.fields[name].data[NAME_LIST]
   if (currentNameList) {
     currentNameList.push(getItemName(value))
     state.fields[name].data = tools.setIn(

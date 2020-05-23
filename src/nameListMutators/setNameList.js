@@ -6,9 +6,7 @@ const setNameList: Mutator<any> = (
   state: MutableState,
   { setIn }: Tools<any>
 ) => {
-  if (state.fields[name]) {
-    state.fields[name].data = setIn(state.fields[name].data, NAME_LIST, value)
-  }
+  state.fields[name].data = setIn(state.fields[name].data, NAME_LIST, value)
 }
 
 export default setNameList

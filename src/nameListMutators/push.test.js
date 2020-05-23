@@ -25,7 +25,7 @@ describe('push', () => {
           touched: true,
           data: {
             NAME_LIST: ['one'],
-            NAME_LIST_INITIALISED: true
+            NAME_LIST_MODIFIED: true
           }
         },
         'foo[0]': {
@@ -38,7 +38,7 @@ describe('push', () => {
     push(['foo', 'two', v => v + '_bar'], state, { setIn, changeValue })
     expect(state.fields.foo.data).toEqual({
       NAME_LIST: ['one', 'two_bar'],
-      NAME_LIST_INITIALISED: true
+      NAME_LIST_MODIFIED: true
     })
   })
 

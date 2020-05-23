@@ -2,7 +2,7 @@ import React from 'react'
 import { render, fireEvent, cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import arrayMutators from './nameListMutators'
-import { NAME_LIST_INITIALISED, NAME_LIST } from './nameListMutators/constants'
+import { NAME_LIST_MODIFIED, NAME_LIST } from './nameListMutators/constants'
 import { ErrorBoundary, Toggle, wrapWith } from './testUtils'
 import { Form, Field } from 'react-final-form'
 import { FieldArray, version } from '.'
@@ -841,7 +841,7 @@ describe('FieldArray', () => {
     expect(renderArray.mock.calls[0][0].meta.data).toEqual({})
   })
 
-  it('should calculate from initialValues', () => {
+  it('should calculate name-list from initialValues', () => {
     const renderArray = jest.fn(() => <div />)
     render(
       <Form
@@ -868,7 +868,7 @@ describe('FieldArray', () => {
     expect(renderArray).toHaveBeenCalledTimes(2)
 
     expect(renderArray.mock.calls[1][0].meta.data).toEqual({
-      [NAME_LIST_INITIALISED]: true,
+      [NAME_LIST_MODIFIED]: false,
       [NAME_LIST]: ['a', 'b', 'c']
     })
   })
@@ -898,7 +898,7 @@ describe('FieldArray', () => {
     expect(renderArray).toHaveBeenCalledTimes(2)
 
     expect(renderArray.mock.calls[1][0].meta.data).toEqual({
-      [NAME_LIST_INITIALISED]: true,
+      [NAME_LIST_MODIFIED]: false,
       [NAME_LIST]: []
     })
   })

@@ -5,7 +5,7 @@ import pop from './pop'
 import push from './push'
 import remove from './remove'
 import setNameList from './setNameList'
-import setNameListInitialised from './setNameListInitialised'
+import setNameListModified from './setNameListModified'
 
 export const mutatorsUsingGetItemName: string[] = ['push']
 
@@ -15,7 +15,7 @@ const mutators: { [string]: Mutator<any> } = {
   push,
   remove,
   setNameList,
-  setNameListInitialised
+  setNameListModified
 }
 
 export default mutators

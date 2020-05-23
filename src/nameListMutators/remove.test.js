@@ -24,7 +24,7 @@ describe('remove', () => {
           touched: true,
           data: {
             NAME_LIST: ['one', 'two', 'three'],
-            NAME_LIST_INITIALISED: true
+            NAME_LIST_MODIFIED: true
           }
         },
         'foo[0]': {
@@ -42,7 +42,7 @@ describe('remove', () => {
     remove(['foo', 1], state, { setIn, changeValue, renameField })
     expect(state.fields.foo.data).toEqual({
       NAME_LIST: ['one', 'three'],
-      NAME_LIST_INITIALISED: true
+      NAME_LIST_MODIFIED: true
     })
     expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 1])
   })
@@ -60,7 +60,7 @@ describe('remove', () => {
           touched: true,
           data: {
             NAME_LIST: [],
-            NAME_LIST_INITIALISED: true
+            NAME_LIST_MODIFIED: true
           }
         }
       }
@@ -72,7 +72,7 @@ describe('remove', () => {
     })
     expect(state.fields.foo.data).toEqual({
       NAME_LIST: [],
-      NAME_LIST_INITIALISED: true
+      NAME_LIST_MODIFIED: true
     })
     expect(result).toBeUndefined()
     expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 1])
@@ -91,7 +91,7 @@ describe('remove', () => {
           touched: true,
           data: {
             NAME_LIST: undefined,
-            NAME_LIST_INITIALISED: true
+            NAME_LIST_MODIFIED: true
           }
         }
       }
@@ -103,7 +103,7 @@ describe('remove', () => {
     })
     expect(state.fields.foo.data).toEqual({
       NAME_LIST: undefined,
-      NAME_LIST_INITIALISED: true
+      NAME_LIST_MODIFIED: true
     })
     expect(result).toBeUndefined()
     expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 1])
@@ -122,7 +122,7 @@ describe('remove', () => {
           touched: true,
           data: {
             NAME_LIST: undefined,
-            NAME_LIST_INITIALISED: true
+            NAME_LIST_MODIFIED: true
           }
         }
       }
@@ -134,7 +134,7 @@ describe('remove', () => {
     })
     expect(state.fields.foo.data).toEqual({
       NAME_LIST: undefined,
-      NAME_LIST_INITIALISED: true
+      NAME_LIST_MODIFIED: true
     })
     expect(result).toBeUndefined()
     expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 'two'])
@@ -153,7 +153,7 @@ describe('remove', () => {
           touched: true,
           data: {
             NAME_LIST: ['one', 'two', 'three'],
-            NAME_LIST_INITIALISED: true
+            NAME_LIST_MODIFIED: true
           }
         },
         'foo[0]': {
@@ -175,7 +175,7 @@ describe('remove', () => {
     })
     expect(state.fields.foo.data).toEqual({
       NAME_LIST: ['one', 'three'],
-      NAME_LIST_INITIALISED: true
+      NAME_LIST_MODIFIED: true
     })
     expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 1])
   })
@@ -193,7 +193,7 @@ describe('remove', () => {
           touched: true,
           data: {
             NAME_LIST: ['one', 'two', 'three'],
-            NAME_LIST_INITIALISED: true
+            NAME_LIST_MODIFIED: true
           }
         },
         'foo[0]': {
@@ -215,7 +215,7 @@ describe('remove', () => {
     })
     expect(state.fields.foo.data).toEqual({
       NAME_LIST: ['one', 'two', 'three'],
-      NAME_LIST_INITIALISED: true
+      NAME_LIST_MODIFIED: true
     })
     expect(result).toBeUndefined()
     expect(arrayMutators.remove).toHaveBeenCalledTimes(1)
@@ -236,7 +236,7 @@ describe('remove', () => {
           touched: true,
           data: {
             NAME_LIST: ['one', 'two', 'three'],
-            NAME_LIST_INITIALISED: true
+            NAME_LIST_MODIFIED: true
           }
         },
         'foo[0]': {
@@ -263,7 +263,7 @@ describe('remove', () => {
           touched: true,
           data: {
             NAME_LIST: ['one', 'three'],
-            NAME_LIST_INITIALISED: true
+            NAME_LIST_MODIFIED: true
           }
         },
         'foo[0]': {

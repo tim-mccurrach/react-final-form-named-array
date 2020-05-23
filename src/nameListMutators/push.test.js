@@ -42,7 +42,7 @@ describe('push', () => {
     })
   })
 
-  it('should return an array with a single item if NAME_LIST is undefined', () => {
+  it('should do nothing if NAME_LIST is undefined', () => {
     const state = {
       formState: {
         values: {
@@ -62,7 +62,7 @@ describe('push', () => {
     }
     push(['foo', 'two', v => v + '_bar'], state, { setIn, changeValue })
     expect(state.fields.foo.data).toEqual({
-      NAME_LIST: ['two_bar'],
+      NAME_LIST: undefined,
       foo: 'bar'
     })
   })

@@ -6,7 +6,7 @@ const changeValue = jest.fn()
 const renameField = jest.fn()
 jest.mock('final-form-arrays')
 
-describe('pop', () => {
+describe('remove', () => {
   afterEach(() => {
     arrayMutators.remove.mockReset()
   })
@@ -78,7 +78,7 @@ describe('pop', () => {
     expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 1])
   })
 
-  it('should treat NAME_LIST undefined same as an empty list - using index', () => {
+  it('should do nothing if NAME_LIST is undefined - using index', () => {
     const state = {
       formState: {
         values: {
@@ -102,14 +102,14 @@ describe('pop', () => {
       renameField
     })
     expect(state.fields.foo.data).toEqual({
-      NAME_LIST: [],
+      NAME_LIST: undefined,
       NAME_LIST_INITIALISED: true
     })
     expect(result).toBeUndefined()
     expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 1])
   })
 
-  it('should treat NAME_LIST undefined same as an empty list - using name', () => {
+  it('should do nothing if NAME_LIST is undefined - using name', () => {
     const state = {
       formState: {
         values: {
@@ -133,11 +133,11 @@ describe('pop', () => {
       renameField
     })
     expect(state.fields.foo.data).toEqual({
-      NAME_LIST: [],
+      NAME_LIST: undefined,
       NAME_LIST_INITIALISED: true
     })
     expect(result).toBeUndefined()
-    expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 0])
+    expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 'two'])
   })
 
   it('should remove the appropriate element when a name is given', () => {

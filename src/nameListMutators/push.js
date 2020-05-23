@@ -16,10 +16,6 @@ const push: Mutator<any> = (
       NAME_LIST,
       currentNameList
     )
-  } else {
-    state.fields[name].data = tools.setIn(state.fields[name].data, NAME_LIST, [
-      getItemName(value)
-    ])
   }
   return arrayMutators.push([name, value], state, tools)
 }

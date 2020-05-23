@@ -11,20 +11,21 @@ const remove: Mutator<any> = (
   tools: Tools<any>
 ) => {
   const currentNameList: ?(string[]) = state.fields[name].data[NAME_LIST]
-  if (typeof indicator === 'string' || indicator instanceof String) {
-    indicator = getIndex(indicator, currentNameList)
+  if (currentNameList) {
+    if (typeof indicator === 'string' || indicator instanceof String) {
+      indicator = getIndex(indicator, currentNameList)
+    }
+    if (indicator === undefined) {
+      // remove nothing if indicator is undefined
+      indicator = currentNameList.length
+    }
+    currentNameList.splice(indicator, 1)
+    state.fields[name].data = tools.setIn(
+      state.fields[name].data,
+      NAME_LIST,
+      currentNameList
+    )
   }
-  const nameListCopy = [...(currentNameList || [])]
-  if (indicator === undefined) {
-    // remove nothing if indicator is undefinedch
-    indicator = nameListCopy.length
-  }
-  nameListCopy.splice(indicator, 1)
-  state.fields[name].data = tools.setIn(
-    state.fields[name].data,
-    NAME_LIST,
-    nameListCopy
-  )
 
   return arrayMutators.remove([name, indicator], state, tools)
 }

@@ -68,7 +68,7 @@ describe('pop', () => {
     pop(['foo'], state, { setIn, changeValue })
     expect(state.fields.foo.data.NAME_LIST).toEqual([])
   })
-  it('should leave data unchanged if NAME_ARRAY is undefined', () => {
+  it('should leave data unchanged if NAME_LIST is undefined', () => {
     const state = {
       formState: {
         values: {

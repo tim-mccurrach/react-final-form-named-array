@@ -113,12 +113,12 @@ const useFieldArray = (
   // 2) https://github.com/final-form/final-form-arrays/issues/53
   if (
     getItemName &&
-    !firstRender &&
+    !firstRender.current &&
     meta.pristine &&
     meta.data &&
     !meta.data[NAME_LIST_INITIALISED]
   ) {
-    reinitialiseNameList()
+    reinitialiseNameList(meta.initial)
   }
   // if the field is no longer prisitne, set NAME_LIST_INITIALISED variable
   // to false so that if the field returns to pristine again, then the name

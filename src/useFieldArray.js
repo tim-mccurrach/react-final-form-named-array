@@ -6,7 +6,7 @@ import type { Mutators } from 'final-form-arrays'
 import type { FieldValidator, FieldSubscription } from 'final-form'
 
 import { mutatorsUsingGetItemName } from './nameListMutators'
-import { NAME_LIST_INITIALISED } from './nameListMutators/constants'
+import { NAME_LIST_MODIFIED } from './nameListMutators/constants'
 import type { FieldArrayRenderProps, UseFieldArrayConfig } from './types'
 import defaultIsEqual from './defaultIsEqual'
 import useConstant from './useConstant'
@@ -35,7 +35,7 @@ const useFieldArray = (
     formMutators.push &&
     formMutators.pop &&
     formMutators.setNameList &&
-    formMutators.setNameListInitialised
+    formMutators.setNameListModified
   )
   if (!hasMutators) {
     throw new Error(
@@ -48,9 +48,7 @@ const useFieldArray = (
     // and also getItemName if applicable
     return Object.keys(formMutators).reduce((result, key) => {
       if (getItemName && mutatorsUsingGetItemName.includes(key)) {
-        result[key] = (...args) => {
-          return formMutators[key](name, ...args, getItemName)
-        }
+        result[key] = (...args) => formMutators[key](name, ...args, getItemName)
       } else {
         result[key] = (...args) => formMutators[key](name, ...args)
       }
@@ -95,7 +93,7 @@ const useFieldArray = (
         ? initial_data.map(value => getItemName(value, initial_data))
         : []
     )
-    mutators.setNameListInitialised(true)
+    mutators.setNameListModified(false)
   }
 
   // set initial name list during first render
@@ -113,23 +111,22 @@ const useFieldArray = (
   // 2) https://github.com/final-form/final-form-arrays/issues/53
   if (
     getItemName &&
-    !firstRender &&
+    !firstRender.current &&
     meta.pristine &&
     meta.data &&
-    !meta.data[NAME_LIST_INITIALISED]
+    meta.data[NAME_LIST_MODIFIED]
   ) {
-    reinitialiseNameList()
+    reinitialiseNameList(meta.initial)
   }
-  // if the field is no longer prisitne, set NAME_LIST_INITIALISED variable
-  // to false so that if the field returns to pristine again, then the name
-  // list will be initialised.
+
+  // set name_list_modified so we know if it needs resetting
   if (
     getItemName &&
     meta.data &&
-    meta.data[NAME_LIST_INITIALISED] &&
+    !meta.data[NAME_LIST_MODIFIED] &&
     !meta.pristine
   ) {
-    mutators.setNameListInitialised(false)
+    mutators.setNameListModified(true)
   }
 
   const forEach = (iterator: (name: string, index: number) => void): void => {

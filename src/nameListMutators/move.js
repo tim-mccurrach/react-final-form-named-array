@@ -23,7 +23,7 @@ const move: Mutator<any> = (
     )
   }
 
-  return arrayMutators([name, from, to], state, tools)
+  return arrayMutators.move([name, from, to], state, tools)
 }
 
 export default move

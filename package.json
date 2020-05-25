@@ -1,7 +1,7 @@
 {
   "name": "react-final-form-named-arrays",
-  "version": "3.1.1",
-  "description": "A component for rendering and editing arrays 🏁 React Final Form",
+  "version": "0.1.0",
+  "description": "An extension of react-final-form-arrays that allows ",
   "main": "dist/react-final-form-arrays.cjs.js",
   "jsnext:main": "dist/react-final-form-arrays.es.js",
   "module": "dist/react-final-form-arrays.es.js",
@@ -14,16 +14,16 @@
     "test": "nps test",
     "precommit": "lint-staged && npm start validate"
   },
-  "author": "Erik Rasmussen <rasmussenerik@gmail.com> (http://github.com/erikras)",
+  "author": "Timothy McCurrach",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/final-form/react-final-form-arrays.git"
+    "url": "https://github.com/tim-mccurrach/react-final-form-named-array.git"
   },
   "bugs": {
-    "url": "https://github.com/final-form/react-final-form-arrays/issues"
+    "url": "https://github.com/tim-mccurrach/react-final-form-named-array/issues"
   },
-  "homepage": "https://github.com/final-form/react-final-form-arrays#readme",
+  "homepage": "https://github.com/tim-mccurrach/react-final-form-named-array#readme",
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.4.4",

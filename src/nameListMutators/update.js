@@ -16,18 +16,12 @@ const update: Mutator<any> = (
       indicator = getIndex(indicator, currentNameList)
     }
     if (indicator === undefined) {
-      // update nothing if indicator is undefined
-      indicator = currentNameList.length
+      // do nothing if indicator is undefined
+      return
     }
-    currentNameList.splice(indicator, 1, value)
-    state.fields[name].data = tools.setIn(
-      state.fields[name].data,
-      NAME_LIST,
-      currentNameList
-    )
   }
 
-  return arrayMutators.update([name, indicator], state, tools)
+  return arrayMutators.update([name, indicator, value], state, tools)
 }
 
 export default update

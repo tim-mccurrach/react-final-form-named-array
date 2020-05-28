@@ -10,6 +10,12 @@ Provides a component very similar to FieldArray, that allows you to refer to ite
 
 This component was born out of a need to asynchronously update values within a Field Array, whilst the order of the array is subject to change. (The actual use case, was uploading multiple files at the same time. We want to update the progress of individual files, but calling `fields.update(index, value)` would produce undesirable results if one upload was deleted whilst another was in progress - as the array indicies would all shift). We therefore need to be able to update by referring to some sort of unique key, rather than an index. There are ways this could be done outside of `FieldArray` but they are potentially very inefficient, and far less convenient.
 
+### Installation
+
+```
+npm install react-final-form-named-arrays
+```
+
 ### FieldArray
 
 The FieldArray object acts in nearly exactly the same way to `FieldArray` provided by `react-final-form-arrays` however it accepts an additional prop, `getItemName`. If `getItemName` is not provided, then `FieldArray` will behave in exactly the same way. With `getItemName` provided, then the mutators `update` and `remove` can accept a string instead of an integer for the 'index' argument.

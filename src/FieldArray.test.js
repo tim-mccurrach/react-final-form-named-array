@@ -328,6 +328,38 @@ describe('FieldArray', () => {
     expect(result).toEqual(['FOO[0]', 'FOO[1]', 'FOO[2]'])
   })
 
+  it('should provide mapValues', () => {
+    const renderArray = jest.fn(() => <div />)
+    render(
+      <Form
+        onSubmit={onSubmitMock}
+        mutators={arrayMutators}
+        subscription={{}}
+        initialValues={{ foo: ['a', 'b', 'c'] }}
+      >
+        {() => (
+          <form>
+            <FieldArray name="foo">{renderArray}</FieldArray>
+          </form>
+        )}
+      </Form>
+    )
+    expect(renderArray).toHaveBeenCalled()
+    expect(renderArray).toHaveBeenCalledTimes(1)
+
+    expect(typeof renderArray.mock.calls[0][0].fields.mapValues).toBe(
+      'function'
+    )
+    const spy = jest.fn(name => name.toUpperCase())
+    const result = renderArray.mock.calls[0][0].fields.mapValues(spy)
+
+    expect(spy).toHaveBeenCalledTimes(3)
+    expect(spy.mock.calls[0]).toEqual(['a', 0])
+    expect(spy.mock.calls[1]).toEqual(['b', 1])
+    expect(spy.mock.calls[2]).toEqual(['c', 2])
+    expect(result).toEqual(['A', 'B', 'C'])
+  })
+
   it('calculate dirty/pristine using provided isEqual predicate', () => {
     const isEqual = jest.fn(
       (aArray, bArray) =>

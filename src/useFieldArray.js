@@ -149,12 +149,24 @@ const useFieldArray = (
     return results
   }
 
+  const mapValues = (iterator: (value: any, index: number) => any): any[] => {
+    // required || for Flow, but results in uncovered line in Jest/Istanbul
+    // istanbul ignore next
+    const len = length || 0
+    const results: any[] = []
+    for (let i = 0; i < len; i++) {
+      results.push(iterator(input.value[i], i))
+    }
+    return results
+  }
+
   return {
     fields: {
       name,
       forEach,
       length: length || 0,
       map,
+      mapValues,
       ...mutators,
       ...fieldState,
       value: input.value

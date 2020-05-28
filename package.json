@@ -1,6 +1,6 @@
 {
   "name": "react-final-form-named-arrays",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An extension of react-final-form-arrays that allows you to access elements inside an array by 'names'",
   "main": "dist/react-final-form-arrays.cjs.js",
   "jsnext:main": "dist/react-final-form-arrays.es.js",

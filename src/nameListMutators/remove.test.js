@@ -23,8 +23,7 @@ describe('remove', () => {
           name: 'foo',
           touched: true,
           data: {
-            NAME_LIST: ['one', 'two', 'three'],
-            NAME_LIST_MODIFIED: true
+            NAME_LIST: ['one', 'two', 'three']
           }
         },
         'foo[0]': {
@@ -41,8 +40,7 @@ describe('remove', () => {
     }
     remove(['foo', 1], state, { setIn, changeValue, renameField })
     expect(state.fields.foo.data).toEqual({
-      NAME_LIST: ['one', 'three'],
-      NAME_LIST_MODIFIED: true
+      NAME_LIST: ['one', 'three']
     })
     expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 1])
   })
@@ -59,8 +57,7 @@ describe('remove', () => {
           name: 'foo',
           touched: true,
           data: {
-            NAME_LIST: [],
-            NAME_LIST_MODIFIED: true
+            NAME_LIST: []
           }
         }
       }
@@ -71,8 +68,7 @@ describe('remove', () => {
       renameField
     })
     expect(state.fields.foo.data).toEqual({
-      NAME_LIST: [],
-      NAME_LIST_MODIFIED: true
+      NAME_LIST: []
     })
     expect(result).toBeUndefined()
     expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 1])
@@ -90,8 +86,7 @@ describe('remove', () => {
           name: 'foo',
           touched: true,
           data: {
-            NAME_LIST: undefined,
-            NAME_LIST_MODIFIED: true
+            NAME_LIST: undefined
           }
         }
       }
@@ -102,8 +97,7 @@ describe('remove', () => {
       renameField
     })
     expect(state.fields.foo.data).toEqual({
-      NAME_LIST: undefined,
-      NAME_LIST_MODIFIED: true
+      NAME_LIST: undefined
     })
     expect(result).toBeUndefined()
     expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 1])
@@ -121,8 +115,7 @@ describe('remove', () => {
           name: 'foo',
           touched: true,
           data: {
-            NAME_LIST: undefined,
-            NAME_LIST_MODIFIED: true
+            NAME_LIST: undefined
           }
         }
       }
@@ -133,8 +126,7 @@ describe('remove', () => {
       renameField
     })
     expect(state.fields.foo.data).toEqual({
-      NAME_LIST: undefined,
-      NAME_LIST_MODIFIED: true
+      NAME_LIST: undefined
     })
     expect(result).toBeUndefined()
     expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 'two'])
@@ -152,8 +144,7 @@ describe('remove', () => {
           name: 'foo',
           touched: true,
           data: {
-            NAME_LIST: ['one', 'two', 'three'],
-            NAME_LIST_MODIFIED: true
+            NAME_LIST: ['one', 'two', 'three']
           }
         },
         'foo[0]': {
@@ -174,8 +165,7 @@ describe('remove', () => {
       renameField
     })
     expect(state.fields.foo.data).toEqual({
-      NAME_LIST: ['one', 'three'],
-      NAME_LIST_MODIFIED: true
+      NAME_LIST: ['one', 'three']
     })
     expect(arrayMutators.remove.mock.calls[0][0]).toEqual(['foo', 1])
   })
@@ -192,8 +182,7 @@ describe('remove', () => {
           name: 'foo',
           touched: true,
           data: {
-            NAME_LIST: ['one', 'two', 'three'],
-            NAME_LIST_MODIFIED: true
+            NAME_LIST: ['one', 'two', 'three']
           }
         },
         'foo[0]': {
@@ -214,8 +203,7 @@ describe('remove', () => {
       renameField
     })
     expect(state.fields.foo.data).toEqual({
-      NAME_LIST: ['one', 'two', 'three'],
-      NAME_LIST_MODIFIED: true
+      NAME_LIST: ['one', 'two', 'three']
     })
     expect(result).toBeUndefined()
     expect(arrayMutators.remove).toHaveBeenCalledTimes(1)
@@ -235,8 +223,7 @@ describe('remove', () => {
           name: 'foo',
           touched: true,
           data: {
-            NAME_LIST: ['one', 'two', 'three'],
-            NAME_LIST_MODIFIED: true
+            NAME_LIST: ['one', 'two', 'three']
           }
         },
         'foo[0]': {
@@ -262,8 +249,7 @@ describe('remove', () => {
           name: 'foo',
           touched: true,
           data: {
-            NAME_LIST: ['one', 'three'],
-            NAME_LIST_MODIFIED: true
+            NAME_LIST: ['one', 'three']
           }
         },
         'foo[0]': {

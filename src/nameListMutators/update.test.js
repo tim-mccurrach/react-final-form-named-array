@@ -21,8 +21,7 @@ describe('update', () => {
           name: 'foo',
           touched: true,
           data: {
-            NAME_LIST: ['one', 'two', 'three'],
-            NAME_LIST_MODIFIED: true
+            NAME_LIST: ['one', 'two', 'three']
           }
         },
         'foo[0]': {
@@ -53,8 +52,7 @@ describe('update', () => {
           name: 'foo',
           touched: true,
           data: {
-            NAME_LIST: ['one', 'two', 'three'],
-            NAME_LIST_MODIFIED: true
+            NAME_LIST: ['one', 'two', 'three']
           }
         }
       }
@@ -62,7 +60,6 @@ describe('update', () => {
     const result = update(['foo', 1, 'bar'], state, { changeValue, setIn })
     expect(result).toEqual('fooBar')
     expect(arrayMutators.update).toHaveBeenCalledTimes(1)
-    console.log(arrayMutators.update.mock.calls[0])
     expect(arrayMutators.update.mock.calls[0]).toEqual([
       ['foo', 1, 'bar'],
       state,
@@ -82,8 +79,7 @@ describe('update', () => {
           name: 'foo',
           touched: true,
           data: {
-            NAME_LIST: ['one', 'two', 'three'],
-            NAME_LIST_MODIFIED: true
+            NAME_LIST: ['one', 'two', 'three']
           }
         }
       }
@@ -109,8 +105,7 @@ describe('update', () => {
           name: 'foo',
           touched: true,
           data: {
-            NAME_LIST: ['one', 'two', 'three'],
-            NAME_LIST_MODIFIED: true
+            NAME_LIST: ['one', 'two', 'three']
           }
         }
       }

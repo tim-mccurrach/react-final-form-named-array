@@ -2,7 +2,7 @@ import React from 'react'
 import { render, fireEvent, cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import arrayMutators from './nameListMutators'
-import { NAME_LIST_MODIFIED, NAME_LIST } from './nameListMutators/constants'
+import { NAME_LIST } from './nameListMutators/constants'
 import { ErrorBoundary, Toggle, wrapWith } from './testUtils'
 import { Form, Field } from 'react-final-form'
 import { FieldArray, version } from '.'
@@ -493,7 +493,7 @@ describe('FieldArray', () => {
       >
         {({ handleSubmit }) => (
           <form onSubmit={handleSubmit} data-testid="form">
-            <FieldArray name="names" subscription={{}}>
+            <FieldArray name="names" subscription={{ pristine: false }}>
               {({ fields }) =>
                 fields.map(field => {
                   return (
@@ -900,7 +900,6 @@ describe('FieldArray', () => {
     expect(renderArray).toHaveBeenCalledTimes(2)
 
     expect(renderArray.mock.calls[1][0].meta.data).toEqual({
-      [NAME_LIST_MODIFIED]: false,
       [NAME_LIST]: ['a', 'b', 'c']
     })
   })
@@ -930,69 +929,7 @@ describe('FieldArray', () => {
     expect(renderArray).toHaveBeenCalledTimes(2)
 
     expect(renderArray.mock.calls[1][0].meta.data).toEqual({
-      [NAME_LIST_MODIFIED]: false,
       [NAME_LIST]: []
-    })
-  })
-  it('should set NAME_LIST_MODIFIED when field array is no longer pristine', () => {
-    const catchMetaData = jest.fn(() => <div />)
-    const { getByTestId } = render(
-      <Form
-        onSubmit={onSubmitMock}
-        mutators={arrayMutators}
-        subscription={{
-          data: true,
-          pristine: true,
-          initial: true,
-          value: true
-        }}
-      >
-        {({ form }) => (
-          <form data-testid="form">
-            <FieldArray
-              name="foo"
-              getItemName={x => x}
-              render={({ fields, meta }) => (
-                <div>
-                  {fields.map(field => (
-                    <Field
-                      name={field}
-                      key={field}
-                      component="input"
-                      data-testid={field}
-                    />
-                  ))}
-                  <button
-                    data-testid="add"
-                    type="button"
-                    onClick={() => fields.push('mccurrach')}
-                  >
-                    Add
-                  </button>
-                  {catchMetaData(meta.data)}
-                </div>
-              )}
-            />
-          </form>
-        )}
-      </Form>
-    )
-    expect(catchMetaData).toHaveBeenCalledTimes(2)
-    expect(catchMetaData.mock.calls[0][0]).toEqual({})
-    expect(catchMetaData.mock.calls[1][0]).toEqual({
-      NAME_LIST: [],
-      NAME_LIST_MODIFIED: false
-    })
-
-    fireEvent.click(getByTestId('add'))
-    expect(catchMetaData).toHaveBeenCalledTimes(4)
-    expect(catchMetaData.mock.calls[2][0]).toEqual({
-      NAME_LIST: ['mccurrach'],
-      NAME_LIST_MODIFIED: false
-    })
-    expect(catchMetaData.mock.calls[3][0]).toEqual({
-      NAME_LIST: ['mccurrach'],
-      NAME_LIST_MODIFIED: true
     })
   })
 
@@ -1050,30 +987,19 @@ describe('FieldArray', () => {
     expect(catchMetaData).toHaveBeenCalledTimes(2)
     expect(catchMetaData.mock.calls[0][0]).toEqual({})
     expect(catchMetaData.mock.calls[1][0]).toEqual({
-      NAME_LIST: [],
-      NAME_LIST_MODIFIED: false
+      NAME_LIST: []
     })
 
     fireEvent.click(getByTestId('add'))
-    expect(catchMetaData).toHaveBeenCalledTimes(4)
+    expect(catchMetaData).toHaveBeenCalledTimes(3)
     expect(catchMetaData.mock.calls[2][0]).toEqual({
-      NAME_LIST: ['mccurrach'],
-      NAME_LIST_MODIFIED: false
-    })
-    expect(catchMetaData.mock.calls[3][0]).toEqual({
-      NAME_LIST: ['mccurrach'],
-      NAME_LIST_MODIFIED: true
+      NAME_LIST: ['mccurrach']
     })
 
     fireEvent.click(getByTestId('reset'))
-    expect(catchMetaData).toHaveBeenCalledTimes(6)
-    expect(catchMetaData.mock.calls[4][0]).toEqual({
-      NAME_LIST: ['mccurrach'],
-      NAME_LIST_MODIFIED: true
-    })
-    expect(catchMetaData.mock.calls[5][0]).toEqual({
-      NAME_LIST: [],
-      NAME_LIST_MODIFIED: false
+    expect(catchMetaData).toHaveBeenCalledTimes(4)
+    expect(catchMetaData.mock.calls[3][0]).toEqual({
+      NAME_LIST: []
     })
   })
 
@@ -1131,30 +1057,207 @@ describe('FieldArray', () => {
     expect(catchMetaData).toHaveBeenCalledTimes(2)
     expect(catchMetaData.mock.calls[0][0]).toEqual({})
     expect(catchMetaData.mock.calls[1][0]).toEqual({
-      NAME_LIST: ['abc', 'def'],
-      NAME_LIST_MODIFIED: false
+      NAME_LIST: ['abc', 'def']
     })
 
     fireEvent.click(getByTestId('add'))
-    expect(catchMetaData).toHaveBeenCalledTimes(4)
+    expect(catchMetaData).toHaveBeenCalledTimes(3)
     expect(catchMetaData.mock.calls[2][0]).toEqual({
-      NAME_LIST: ['abc', 'def', 'mccurrach'],
-      NAME_LIST_MODIFIED: false
-    })
-    expect(catchMetaData.mock.calls[3][0]).toEqual({
-      NAME_LIST: ['abc', 'def', 'mccurrach'],
-      NAME_LIST_MODIFIED: true
+      NAME_LIST: ['abc', 'def', 'mccurrach']
     })
 
     fireEvent.click(getByTestId('reset'))
-    expect(catchMetaData).toHaveBeenCalledTimes(6)
-    expect(catchMetaData.mock.calls[4][0]).toEqual({
-      NAME_LIST: ['abc', 'def', 'mccurrach'],
-      NAME_LIST_MODIFIED: true
+    expect(catchMetaData).toHaveBeenCalledTimes(5)
+    expect(catchMetaData.mock.calls[3][0]).toEqual({
+      NAME_LIST: ['abc', 'def', 'mccurrach']
     })
-    expect(catchMetaData.mock.calls[5][0]).toEqual({
-      NAME_LIST: ['abc', 'def'],
-      NAME_LIST_MODIFIED: false
+    expect(catchMetaData.mock.calls[4][0]).toEqual({
+      NAME_LIST: ['abc', 'def']
+    })
+  })
+
+  it('should reinitialize NAME_LIST when initialValues prop changes', () => {
+    const catchMetaData = jest.fn(() => <div />)
+    const initialValues = { foo: ['abc', 'def'] }
+    const alternateInitialValues = { foo: ['abc2', 'def2'] }
+    const { getByText } = render(
+      <Toggle>
+        {useAlternateInitialValues => (
+          <Form
+            onSubmit={onSubmitMock}
+            mutators={arrayMutators}
+            initialValues={
+              useAlternateInitialValues ? alternateInitialValues : initialValues
+            }
+            subscription={{
+              data: true,
+              pristine: true,
+              initial: true,
+              value: true
+            }}
+          >
+            {({ form }) => (
+              <form data-testid="form">
+                <FieldArray
+                  name="foo"
+                  getItemName={x => x}
+                  render={({ fields, meta }) => (
+                    <div>
+                      {fields.map(field => (
+                        <Field
+                          name={field}
+                          key={field}
+                          component="input"
+                          data-testid={field}
+                        />
+                      ))}
+                      {catchMetaData(meta.data)}
+                    </div>
+                  )}
+                />
+              </form>
+            )}
+          </Form>
+        )}
+      </Toggle>
+    )
+    expect(catchMetaData).toHaveBeenCalledTimes(2)
+    expect(catchMetaData.mock.calls[0][0]).toEqual({})
+    expect(catchMetaData.mock.calls[1][0]).toEqual({
+      NAME_LIST: ['abc', 'def']
+    })
+    fireEvent.click(getByText('Toggle'))
+
+    expect(catchMetaData).toHaveBeenCalledTimes(4)
+    expect(catchMetaData.mock.calls[2][0]).toEqual({
+      NAME_LIST: ['abc', 'def']
+    })
+    expect(catchMetaData.mock.calls[3][0]).toEqual({
+      NAME_LIST: ['abc2', 'def2']
+    })
+  })
+
+  it("should NOT reinitialize when initialValues prop doesn't change (shallowly) but rerendered", () => {
+    const catchMetaData = jest.fn(() => <div />)
+    const { getByTestId, getByText } = render(
+      <Toggle>
+        {() => (
+          <Form
+            onSubmit={onSubmitMock}
+            mutators={arrayMutators}
+            initialValues={{ foo: ['abc', 'def'] }}
+          >
+            {({ form }) => (
+              <form data-testid="form">
+                <FieldArray
+                  name="foo"
+                  getItemName={x => x}
+                  render={({ fields, meta }) => (
+                    <div>
+                      {fields.map(field => (
+                        <Field
+                          name={field}
+                          key={field}
+                          component="input"
+                          data-testid={field}
+                        />
+                      ))}
+                      {catchMetaData(meta.data)}
+                      <button
+                        data-testid="add"
+                        type="button"
+                        onClick={() => fields.push('mccurrach')}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  )}
+                />
+              </form>
+            )}
+          </Form>
+        )}
+      </Toggle>
+    )
+    expect(catchMetaData).toHaveBeenCalledTimes(2)
+    expect(catchMetaData.mock.calls[0][0]).toEqual({})
+    expect(catchMetaData.mock.calls[1][0]).toEqual({
+      NAME_LIST: ['abc', 'def']
+    })
+    fireEvent.click(getByTestId('add'))
+    expect(catchMetaData).toHaveBeenCalledTimes(4)
+    expect(catchMetaData.mock.calls[2][0]).toEqual({
+      NAME_LIST: ['abc', 'def', 'mccurrach']
+    })
+    expect(catchMetaData.mock.calls[3][0]).toEqual({
+      NAME_LIST: ['abc', 'def', 'mccurrach']
+    })
+    fireEvent.click(getByText('Toggle'))
+
+    expect(catchMetaData).toHaveBeenCalledTimes(7)
+    expect(catchMetaData.mock.calls[4][0]).toEqual({
+      NAME_LIST: ['abc', 'def', 'mccurrach']
+    })
+  })
+
+  it('should reinitialize NAME_LIST when initialValues prop changes (deely)', () => {
+    const catchMetaData = jest.fn(() => <div />)
+    const initialValues = { foo: { bar: ['abc', 'def'] } }
+    const alternateInitialValues = { foo: { bar: ['abc2', 'def2'] } }
+    const { getByText } = render(
+      <Toggle>
+        {useAlternateInitialValues => (
+          <Form
+            onSubmit={onSubmitMock}
+            mutators={arrayMutators}
+            initialValues={
+              useAlternateInitialValues ? alternateInitialValues : initialValues
+            }
+            subscription={{
+              data: true,
+              pristine: true,
+              initial: true,
+              value: true
+            }}
+          >
+            {({ form }) => (
+              <form data-testid="form">
+                <FieldArray
+                  name="foo.bar"
+                  getItemName={x => x}
+                  render={({ fields, meta }) => (
+                    <div>
+                      {fields.map(field => (
+                        <Field
+                          name={field}
+                          key={field}
+                          component="input"
+                          data-testid={field}
+                        />
+                      ))}
+                      {catchMetaData(meta.data)}
+                    </div>
+                  )}
+                />
+              </form>
+            )}
+          </Form>
+        )}
+      </Toggle>
+    )
+    expect(catchMetaData).toHaveBeenCalledTimes(2)
+    expect(catchMetaData.mock.calls[0][0]).toEqual({})
+    expect(catchMetaData.mock.calls[1][0]).toEqual({
+      NAME_LIST: ['abc', 'def']
+    })
+    fireEvent.click(getByText('Toggle'))
+
+    expect(catchMetaData).toHaveBeenCalledTimes(4)
+    expect(catchMetaData.mock.calls[2][0]).toEqual({
+      NAME_LIST: ['abc', 'def']
+    })
+    expect(catchMetaData.mock.calls[3][0]).toEqual({
+      NAME_LIST: ['abc2', 'def2']
     })
   })
 })

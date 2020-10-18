@@ -1,13 +1,13 @@
 // @flow
 import React from 'react'
 import { useForm, useField } from 'react-final-form'
-import { fieldSubscriptionItems, ARRAY_ERROR } from 'final-form'
+import { fieldSubscriptionItems, ARRAY_ERROR, getIn } from 'final-form'
 import type { Mutators } from 'final-form-arrays'
 import type { FieldValidator, FieldSubscription } from 'final-form'
 
 import { mutatorsUsingGetItemName } from './nameListMutators'
-import { NAME_LIST_MODIFIED } from './nameListMutators/constants'
-import type { FieldArrayRenderProps, UseFieldArrayConfig } from './types'
+import { NAME_LIST } from './nameListMutators/constants'
+import type { FieldArrayRenderProps, UseFieldArrayConfig, Meta } from './types'
 import defaultIsEqual from './defaultIsEqual'
 import useConstant from './useConstant'
 
@@ -34,8 +34,7 @@ const useFieldArray = (
     formMutators &&
     formMutators.push &&
     formMutators.pop &&
-    formMutators.setNameList &&
-    formMutators.setNameListModified
+    formMutators.setNameList
   )
   if (!hasMutators) {
     throw new Error(
@@ -75,8 +74,8 @@ const useFieldArray = (
     meta: { length, ...meta },
     input,
     ...fieldState
-  } = useField(name, {
-    subscription: { ...subscription, length: true },
+  }: { meta: Meta, input: Object, ... } = useField(name, {
+    subscription: { pristine: true, ...subscription, length: true },
     defaultValue,
     initialValue,
     isEqual,
@@ -84,50 +83,53 @@ const useFieldArray = (
     format: v => v
   })
 
+  const initialNameListValues = React.useRef([])
+
   const reinitialiseNameList = initial_data => {
+    // required for Flow, but results in uncovered line in Jest/Istanbul
+    // istanbul ignore next
     if (!getItemName) {
       return
     }
-    mutators.setNameList(
-      initial_data
-        ? initial_data.map(value => getItemName(value, initial_data))
-        : []
-    )
-    mutators.setNameListModified(false)
+    const newNameList = initial_data
+      ? initial_data.map(value => getItemName(value, initial_data))
+      : []
+    mutators.setNameList(newNameList)
+    initialNameListValues.current = [...newNameList]
   }
 
-  // set initial name list during first render
-  const firstRender = React.useRef(true)
+  // when the initial values have changed the form will have been reset,
+  // so we must update NAME_LIST to keep things in sync.
+  React.useEffect(
+    () => {
+      if (getItemName) {
+        form.subscribe(
+          values => {
+            const initialValue = getIn(values.initialValues, name)
+            reinitialiseNameList(initialValue)
+          },
+          { initialValues: true }
+        )
+      }
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
+
+  // to detect when api.initalize has been called.
+  const previouslyPrestine = React.useRef(meta.pristine)
   React.useEffect(() => {
-    reinitialiseNameList(meta.initial)
-    firstRender.current = false
-  }, [])
-
-  // reset name list when form is reset:
-  // Ideally we would use modified here rather than pristine, however
-  // there are two erros with modified at the time of writing, that would
-  // make this difficult:
-  // 1) https://github.com/final-form/final-form/issues/317
-  // 2) https://github.com/final-form/final-form-arrays/issues/53
-  if (
-    getItemName &&
-    !firstRender.current &&
-    meta.pristine &&
-    meta.data &&
-    meta.data[NAME_LIST_MODIFIED]
-  ) {
-    reinitialiseNameList(meta.initial)
-  }
-
-  // set name_list_modified so we know if it needs resetting
-  if (
-    getItemName &&
-    meta.data &&
-    !meta.data[NAME_LIST_MODIFIED] &&
-    !meta.pristine
-  ) {
-    mutators.setNameListModified(true)
-  }
+    if (getItemName && meta.pristine !== previouslyPrestine.current) {
+      if (
+        meta.pristine &&
+        (meta.data === undefined ||
+          !defaultIsEqual(initialNameListValues.current, meta.data[NAME_LIST]))
+      ) {
+        const initialValue = getIn(form.getState().initialValues, name)
+        reinitialiseNameList(initialValue)
+      }
+      previouslyPrestine.current = meta.pristine
+    }
+  })
 
   const forEach = (iterator: (name: string, index: number) => void): void => {
     // required || for Flow, but results in uncovered line in Jest/Istanbul

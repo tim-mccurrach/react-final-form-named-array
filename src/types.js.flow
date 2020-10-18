@@ -2,9 +2,9 @@
 import * as React from 'react'
 import type { FieldSubscription, FieldState } from 'final-form'
 
-type Meta = $Shape<{
+export type Meta = $Shape<{
   active?: boolean,
-  data?: Object,
+  data?: { NAME_LIST?: string[] },
   dirty?: boolean,
   dirtySinceLastSubmit?: boolean,
   error?: any,

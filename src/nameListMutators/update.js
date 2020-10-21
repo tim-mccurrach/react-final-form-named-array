@@ -19,8 +19,11 @@ const update: Mutator<any> = (
       // do nothing if indicator is undefined
       return
     }
+    if (typeof value === 'function') {
+      const currentValue = tools.getIn(state.formState.values, name)
+      value = value(currentValue[indicator], currentValue)
+    }
   }
-
   return arrayMutators.update([name, indicator, value], state, tools)
 }
 

@@ -140,24 +140,27 @@ const useFieldArray = (
     }
   }
 
-  const map = (iterator: (name: string, index: number) => any): any[] => {
+  const map = (
+    iterator: (name: string, index: number, value: any) => any
+  ): any[] => {
     // required || for Flow, but results in uncovered line in Jest/Istanbul
     // istanbul ignore next
     const len = length || 0
     const results: any[] = []
-    for (let i = 0; i < len; i++) {
-      results.push(iterator(`${name}[${i}]`, i))
-    }
-    return results
-  }
-
-  const mapValues = (iterator: (value: any, index: number) => any): any[] => {
-    // required || for Flow, but results in uncovered line in Jest/Istanbul
-    // istanbul ignore next
-    const len = length || 0
-    const results: any[] = []
-    for (let i = 0; i < len; i++) {
-      results.push(iterator(input.value[i], i))
+    if (getItemName) {
+      for (let i = 0; i < len; i++) {
+        results.push(
+          iterator(
+            `${name}[${i}]`,
+            i,
+            input.value !== undefined && input.value[i]
+          )
+        )
+      }
+    } else {
+      for (let i = 0; i < len; i++) {
+        results.push(iterator(`${name}[${i}]`, i))
+      }
     }
     return results
   }
@@ -168,7 +171,6 @@ const useFieldArray = (
       forEach,
       length: length || 0,
       map,
-      mapValues,
       ...mutators,
       ...fieldState,
       value: input.value

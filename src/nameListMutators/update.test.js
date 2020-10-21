@@ -1,6 +1,6 @@
 import update from './update'
 import arrayMutators from 'final-form-arrays'
-import { setIn } from 'final-form'
+import { getIn, setIn } from 'final-form'
 
 const changeValue = jest.fn()
 jest.mock('final-form-arrays')
@@ -136,6 +136,35 @@ describe('update', () => {
       ['foo', 'two', 'bar'],
       state,
       { changeValue, setIn }
+    ])
+  })
+  it("should call value with the current value, and array values if 'value' is a function", () => {
+    const state = {
+      formState: {
+        values: {
+          foo: ['one', 'two', 'three']
+        }
+      },
+      fields: {
+        foo: {
+          name: 'foo',
+          touched: true,
+          data: {
+            NAME_LIST: ['one', 'two', 'three']
+          }
+        }
+      }
+    }
+    const value = jest.fn()
+    value.mockReturnValueOnce('bar')
+    update(['foo', 'two', value], state, { changeValue, setIn, getIn })
+    expect(value).toHaveBeenCalledTimes(1)
+    expect(value.mock.calls[0]).toEqual(['two', ['one', 'two', 'three']])
+    expect(arrayMutators.update).toHaveBeenCalledTimes(1)
+    expect(arrayMutators.update.mock.calls[0]).toEqual([
+      ['foo', 1, 'bar'],
+      state,
+      { changeValue, setIn, getIn }
     ])
   })
 })

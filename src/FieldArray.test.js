@@ -1,5 +1,11 @@
 import React from 'react'
-import { render, fireEvent, cleanup } from '@testing-library/react'
+import {
+  render,
+  fireEvent,
+  cleanup,
+  act,
+  waitFor
+} from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import arrayMutators from './nameListMutators'
 import { NAME_LIST } from './nameListMutators/constants'
@@ -8,7 +14,6 @@ import { Form, Field } from 'react-final-form'
 import { FieldArray, version } from '.'
 
 const onSubmitMock = values => {}
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 describe('FieldArray', () => {
   afterEach(cleanup)
@@ -260,7 +265,9 @@ describe('FieldArray', () => {
 
     expect(typeof renderArray.mock.calls[0][0].fields.push).toBe('function')
 
-    renderArray.mock.calls[0][0].fields.push('c')
+    act(() => {
+      renderArray.mock.calls[0][0].fields.push('c')
+    })
     expect(validate).toHaveBeenCalledTimes(2)
 
     expect(renderArray).toHaveBeenCalledTimes(2)
@@ -328,36 +335,37 @@ describe('FieldArray', () => {
     expect(result).toEqual(['FOO[0]', 'FOO[1]', 'FOO[2]'])
   })
 
-  it('should provide mapValues', () => {
-    const renderArray = jest.fn(() => <div />)
+  it('should provide map with values when getItemName is provided', () => {
+    const renderArray = jest.fn(({ fields: { map } }) =>
+      map((name, index, value) => (
+        <Field key={name} name={name} component="input" />
+      ))
+    )
     render(
       <Form
         onSubmit={onSubmitMock}
         mutators={arrayMutators}
-        subscription={{}}
         initialValues={{ foo: ['a', 'b', 'c'] }}
       >
         {() => (
           <form>
-            <FieldArray name="foo">{renderArray}</FieldArray>
+            <FieldArray name="foo" getItemName={x => x}>
+              {renderArray}
+            </FieldArray>
           </form>
         )}
       </Form>
     )
-    expect(renderArray).toHaveBeenCalled()
-    expect(renderArray).toHaveBeenCalledTimes(1)
+    expect(renderArray).toHaveBeenCalledTimes(2)
 
-    expect(typeof renderArray.mock.calls[0][0].fields.mapValues).toBe(
-      'function'
-    )
-    const spy = jest.fn(name => name.toUpperCase())
-    const result = renderArray.mock.calls[0][0].fields.mapValues(spy)
+    expect(typeof renderArray.mock.calls[0][0].fields.map).toBe('function')
+    const spy = jest.fn()
+    renderArray.mock.calls[1][0].fields.map(spy)
 
     expect(spy).toHaveBeenCalledTimes(3)
-    expect(spy.mock.calls[0]).toEqual(['a', 0])
-    expect(spy.mock.calls[1]).toEqual(['b', 1])
-    expect(spy.mock.calls[2]).toEqual(['c', 2])
-    expect(result).toEqual(['A', 'B', 'C'])
+    expect(spy.mock.calls[0]).toEqual(['foo[0]', 0, 'a'])
+    expect(spy.mock.calls[1]).toEqual(['foo[1]', 1, 'b'])
+    expect(spy.mock.calls[2]).toEqual(['foo[2]', 2, 'c'])
   })
 
   it('calculate dirty/pristine using provided isEqual predicate', () => {
@@ -542,7 +550,7 @@ describe('FieldArray', () => {
               {({ fields }) => (
                 <div>
                   {fields.map(field => (
-                    <div>
+                    <div key={field}>
                       <Field
                         name={`${field}.firstName`}
                         key={`${field}.firstName`}
@@ -563,6 +571,7 @@ describe('FieldArray', () => {
                 </div>
               )}
             </FieldArray>
+            npm
           </form>
         )}
       </Form>
@@ -758,15 +767,15 @@ describe('FieldArray', () => {
         )}
       </Form>
     )
+
     expect(getByTestId('values')).toHaveTextContent('')
     expect(onSubmit).not.toHaveBeenCalled()
     fireEvent.click(getByText('Add'))
     expect(getByTestId('values')).toHaveTextContent('{"names":["erikras"]}')
     fireEvent.submit(getByTestId('form'))
-    await sleep(3)
     expect(onSubmit).toHaveBeenCalled()
     expect(onSubmit).toHaveBeenCalledTimes(1)
-    expect(getByTestId('values')).toHaveTextContent('')
+    await waitFor(() => expect(getByTestId('values')).toHaveTextContent(''))
   })
 
   it('should provide value', () => {
